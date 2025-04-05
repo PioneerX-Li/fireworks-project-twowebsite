@@ -1,0 +1,25 @@
+# 依赖包
+node_modules/
+.DS_Store
+
+# 生成的文件
+temp/
+output/
+projects/
+
+# 环境文件
+.env
+
+# 日志
+logs
+*.log
+npm-debug.log*
+
+# 编辑器配置
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
