@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>烟花特效库</title>
+    <link rel="stylesheet" href="css/effects.css">
+    <style>
+        /* 全局样式 */
+        :root {
+            --bg-dark: #000;
+            --text-primary: #e0e4f5;
+            --primary-color: #4a6af9;
+            --accent-color: #f76a4f;
+            --border-color: #333;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            font-family: "SF Pro Display", -apple-system, "Segoe UI", sans-serif;
+            font-size: 14px;
+            line-height: 1.5;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        
+        p {
+            color: #aaa;
+            margin-bottom: 20px;
+        }
+        
+        /* 预览容器 */
+        .preview-container {
+            display: flex;
+            margin-bottom: 30px;
+        }
+        
+        .canvas-container {
+            flex: 3;
+            position: relative;
+            height: 500px;
+            background: #000;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        #effectCanvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+        
+        /* 控制面板 */
+        .controls-panel {
+            flex: 1;
+            padding: 20px;
+            background: #111;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            margin-left: 20px;
+        }
+        
+        .control-group {
+            margin-bottom: 15px;
+        }
+        
+        .control-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #ccc;
+        }
+        
+        select, input, button {
+            width: 100%;
+            padding: 8px 10px;
+            background: #222;
+            border: 1px solid #333;
+            border-radius: 5px;
+            color: var(--text-primary);
+            font-family: inherit;
+        }
+        
+        input[type="range"] {
+            height: 5px;
+            appearance: none;
+            background: #333;
+            outline: none;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        
+        input[type="range"]::-webkit-slider-thumb {
+            appearance: none;
+            width: 15px;
+            height: 15px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        
+        input[type="color"] {
+            height: 36px;
+            padding: 2px;
+            cursor: pointer;
+        }
+        
+        button {
+            background: var(--primary-color);
+            color: white;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            margin-top: 10px;
+        }
+        
+        button:hover {
+            background: #3b5bd0;
+        }
+        
+        /* 特效库 */
+        .effects-library {
+            margin-top: 30px;
+            overflow: hidden;
+        }
+        
+        .effects-grid {
+            display: flex;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            padding-bottom: 15px; /* 为滚动条留出空间 */
+            scrollbar-width: thin;
+            scroll-behavior: smooth;
+            gap: 20px;
+        }
+        
+        /* 美化滚动条 */
+        .effects-grid::-webkit-scrollbar {
+            height: 8px;
+        }
+        
+        .effects-grid::-webkit-scrollbar-track {
+            background: #222;
+            border-radius: 4px;
+        }
+        
+        .effects-grid::-webkit-scrollbar-thumb {
+            background: var(--primary-color);
+            border-radius: 4px;
+        }
+        
+        .effect-card {
+            flex: 0 0 200px; /* 固定宽度，不伸缩 */
+            margin-right: 0; /* 移除右边距，使用gap替代 */
+            background: #111;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+        
+        .effect-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            border-color: var(--primary-color);
+        }
+        
+        .effect-preview {
+            height: 150px !important;
+            background: #000;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* 确保所有烟花子类型动画正常播放 */
+        .effect-preview[class*="firework-"] {
+            animation-duration: 2s;
+            animation-iteration-count: infinite;
+            animation-fill-mode: both;
+        }
+        
+        .effect-info {
+            padding: 15px;
+        }
+        
+        .effect-info h3 {
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+        
+        .effect-info p {
+            font-size: 12px;
+            color: #888;
+            margin-bottom: 10px;
+        }
+        
+        .effect-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .effect-actions button {
+            flex: 1;
+            font-size: 12px;
+            padding: 6px 0;
+        }
+        
+        /* 展开按钮样式 */
+        #expandFireworks {
+            background: #4a6af9 !important;
+            width: 100%;
+            margin-top: 10px;
+            border: none;
+            border-radius: 5px;
+            padding: 8px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+        
+        #expandFireworks:hover {
+            background: #3b5bd0 !important;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* 添加导航按钮样式 */
+        .effects-navigation {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 15px 0;
+        }
+        
+        .nav-button {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 8px 15px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        
+        .nav-button:hover {
+            background: #3b5bd0;
+        }
+        
+        /* 调试面板样式 */
+        .debug-panel {
+            margin-top: 20px;
+            padding: 10px;
+            background: #1a1a1a;
+            border: 1px solid #444;
+            border-radius: 5px;
+            font-family: monospace;
+        }
+        
+        .debug-panel h3 {
+            margin-top: 0;
+            color: #f0f0f0;
+            font-size: 14px;
+            border-bottom: 1px solid #444;
+            padding-bottom: 5px;
+        }
+        
+        #debugOutput {
+            white-space: pre-wrap;
+            font-size: 12px;
+            line-height: 1.4;
+            color: #00ff00;
+            background: #000;
+            padding: 5px;
+            border-radius: 3px;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>烟花特效库</h1>
+            <p>用于预览和测试各种烟花特效的动态效果</p>
+        </header>
+        
+        <div class="preview-container">
+            <div class="canvas-container">
+                <canvas id="effectCanvas"></canvas>
+            </div>
+            
+            <div class="control-panel">
+                <h2>控制面板</h2>
+                
+                <div class="control-group">
+                    <label>特效类型</label>
+                    <select id="effectType">
+                        <option value="firework">基础烟花</option>
+                        <option value="firework-peony">牡丹花型烟花</option>
+                        <option value="firework-willow">柳树型烟花</option>
+                        <option value="firework-flame">烈焰绘花烟花</option>
+                        <option value="firework-leaf">叶状烟花</option>
+                        <option value="firework-ring">环形烟花</option>
+                        <option value="firework-roman-candle">罗马蜡烛</option>
+                        <option value="firework-salute">礼炮烟花</option>
+                        <option value="firework-spider">蜘蛛型烟花</option>
+                        <option value="firework-twinkle">闪烁烟花</option>
+                        <option value="sparkle">闪光</option>
+                        <option value="fountain">喷泉</option>
+                        <option value="meteor">流星</option>
+                        <option value="spiral">螺旋</option>
+                        <option value="heart">爱心</option>
+                        <option value="confetti">彩带</option>
+                        <option value="stars">星光</option>
+                        <option value="bubbles">气泡</option>
+                        <option value="flame">火焰</option>
+                        <option value="snow">雪花</option>
+                        <option value="glitter">闪粉</option>
+                    </select>
+                </div>
+                
+                <div class="control-group">
+                    <label>颜色</label>
+                    <input type="color" id="effectColor" value="#ff5500">
+                </div>
+                
+                <div class="control-group">
+                    <label>大小 <span id="sizeValue">5</span></label>
+                    <input type="range" id="effectSize" min="1" max="10" value="5">
+                </div>
+                
+                <div class="control-group">
+                    <label>数量 <span id="particlesValue">50</span></label>
+                    <input type="range" id="effectParticles" min="10" max="200" value="50">
+                </div>
+                
+                <div class="control-group">
+                    <label>速度 <span id="speedValue">5</span></label>
+                    <input type="range" id="effectSpeed" min="1" max="10" value="5">
+                </div>
+                
+                <div class="control-group">
+                    <label>持续时间 <span id="durationValue">2.0</span>秒</label>
+                    <input type="range" id="effectDuration" min="1" max="5" step="0.1" value="2.0">
+                </div>
+                
+                <div class="buttons-row">
+                <button id="playEffect">播放效果</button>
+                    <button id="testAllEffects">测试所有</button>
+                    <button id="debugBtn" style="background: #aa5500;">调试</button>
+                </div>
+                
+                <div class="debug-panel" style="margin-top: 20px; padding: 10px; background: #1a1a1a; border: 1px solid #444; font-family: monospace; border-radius: 5px;">
+                    <h3>调试输出</h3>
+                    <div id="debugOutput" style="white-space: pre-wrap; font-size: 12px; color: #00ff00; background: #000; padding: 5px; border-radius: 3px; max-height: 150px; overflow-y: auto;"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="effects-library">
+            <h2>效果库</h2>
+            <div class="effects-navigation">
+                <button class="nav-button" id="prevPage">上一页</button>
+                <button class="nav-button" id="nextPage">下一页</button>
+            </div>
+            <div class="effects-grid">
+                <div class="effect-card">
+                    <div class="effect-preview firework-preview"></div>
+                    <div class="effect-info">
+                        <h3>烟花爆炸</h3>
+                        <p>经典的烟花爆炸效果，粒子向四周扩散</p>
+                        <div class="effect-actions">
+                            <button class="preview-btn" data-effect="firework">预览</button>
+                            <button class="add-btn" data-effect="firework">添加</button>
+                        </div>
+                        <button id="expandFireworks" style="width: 100%; margin-top: 5px; background: #4a6af9; border: none; border-radius: 5px; padding: 5px; color: white; cursor: pointer;">展开子类型</button>
+                    </div>
+                </div>
+                
+                <!-- 烟花子类型卡片 -->
+                <div class="effect-card firework-subtype">
+                    <div class="effect-preview firework-peony"></div>
+                    <div class="effect-info">
+                        <h3>牡丹花型烟花</h3>
+                        <p>形成圆形花朵状的爆炸效果，粒子从中心向外扩散</p>
+                        <div class="effect-actions">
+                            <button class="preview-btn" data-effect="firework-peony">预览</button>
+                            <button class="add-btn" data-effect="firework-peony">添加</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="effect-card firework-subtype">
+                    <div class="effect-preview firework-willow"></div>
+                    <div class="effect-info">
+                        <h3>柳树型烟花</h3>
+                        <p>柳条状烟花，从中心爆发后向下垂落的流苏效果</p>
+                        <div class="effect-actions">
+                            <button class="preview-btn" data-effect="firework-willow">预览</button>
+                            <button class="add-btn" data-effect="firework-willow">添加</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="effect-card firework-subtype">
+                    <div class="effect-preview firework-flame"></div>
+                    <div class="effect-info">
+                        <h3>烈焰绘花烟花</h3>
+                        <p>带有火焰效果的烟花，火花从中心爆发并留下火焰痕迹</p>
+                        <div class="effect-actions">
+                            <button class="preview-btn" data-effect="firework-flame">预览</button>
+                            <button class="add-btn" data-effect="firework-flame">添加</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="effect-card firework-subtype">
+                    <div class="effect-preview firework-leaf"></div>
+                    <div class="effect-info">
+                        <h3>叶状烟花</h3>
+                        <p>像落叶一样缓慢旋转飘落的烟花效果</p>
+                        <div class="effect-actions">
+                            <button class="preview-btn" data-effect="firework-leaf">预览</button>
+                            <button class="add-btn" data-effect="firework-leaf">添加</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="effect-card firework-subtype">
+                    <div class="effect-preview firework-roman"></div>
+                    <div class="effect-info">
+                        <h3>罗马蜡烛</h3>
+                        <p>模拟罗马蜡烛的多段连续垂直发射烟花效果</p>
+                        <div class="effect-actions">
+                            <button class="preview-btn" data-effect="firework-roman-candle">预览</button>
+                            <button class="add-btn" data-effect="firework-roman-candle">添加</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="effect-card firework-subtype">
+                    <div class="effect-preview firework-salute"></div>
+                    <div class="effect-info">
+                        <h3>礼炮烟花</h3>
+                        <p>模拟礼炮爆炸效果，带有强烈的声光冲击感</p>
+                        <div class="effect-actions">
+                            <button class="preview-btn" data-effect="firework-salute">预览</button>
+                            <button class="add-btn" data-effect="firework-salute">添加</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 蜘蛛型烟花 -->
+                <div class="effect-card firework-subtype">
+                    <div class="effect-preview firework-spider"></div>
+                    <div class="effect-info">
+                        <h3>蜘蛛型烟花</h3>
+                        <p>像蜘蛛网一样扩散后下垂的烟花效果</p>
+                        <div class="effect-actions">
+                            <button class="preview-btn" data-effect="firework-spider">预览</button>
+                            <button class="add-btn" data-effect="firework-spider">添加</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 环形烟花 -->
+                <div class="effect-card firework-subtype">
+                    <div class="effect-preview firework-ring"></div>
+                    <div class="effect-info">
+                        <h3>环形烟花</h3>
+                        <p>形成多层同心圆环的烟花效果</p>
+                        <div class="effect-actions">
+                            <button class="preview-btn" data-effect="firework-ring">预览</button>
+                            <button class="add-btn" data-effect="firework-ring">添加</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 闪烁烟花 -->
+                <div class="effect-card firework-subtype">
+                    <div class="effect-preview firework-twinkle"></div>
+                    <div class="effect-info">
+                        <h3>闪烁烟花</h3>
+                        <p>以不同频率闪烁的星点效果的烟花</p>
+                        <div class="effect-actions">
+                            <button class="preview-btn" data-effect="firework-twinkle">预览</button>
+                            <button class="add-btn" data-effect="firework-twinkle">添加</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="effect-card">
+                    <div class="effect-preview sparkle-preview"></div>
+                    <div class="effect-info">
+                        <h3>闪光</h3>
+                        <p>明亮的闪烁效果，模拟闪光灯</p>
+                        <div class="effect-actions">
+                            <button class="preview-btn" data-effect="sparkle">预览</button>
+                            <button class="add-btn" data-effect="sparkle">添加</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="effect-card">
+                    <div class="effect-preview fountain-preview"></div>
+                    <div class="effect-info">
+                        <h3>喷泉</h3>
+                        <p>喷射型效果，粒子向上喷射后向下散落</p>
+                        <div class="effect-actions">
+                            <button class="preview-btn" data-effect="fountain">预览</button>
+                            <button class="add-btn" data-effect="fountain">添加</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="effect-card">
+                    <div class="effect-preview meteor-preview"></div>
+                    <div class="effect-info">
+                        <h3>流星</h3>
+                        <p>从一侧向另一侧移动的闪亮效果</p>
+                        <div class="effect-actions">
+                            <button class="preview-btn" data-effect="meteor">预览</button>
+                            <button class="add-btn" data-effect="meteor">添加</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="effect-card">
+                    <div class="effect-preview spiral-preview"></div>
+                    <div class="effect-info">
+                        <h3>螺旋</h3>
+                        <p>旋转的螺旋形粒子效果</p>
+                        <div class="effect-actions">
+                            <button class="preview-btn" data-effect="spiral">预览</button>
+                            <button class="add-btn" data-effect="spiral">添加</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="effect-card">
+                    <div class="effect-preview heart-preview"></div>
+                    <div class="effect-info">
+                        <h3>爱心</h3>
+                        <p>形成爱心形状的粒子效果</p>
+                        <div class="effect-actions">
+                            <button class="preview-btn" data-effect="heart">预览</button>
+                            <button class="add-btn" data-effect="heart">添加</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="effect-card">
+                    <div class="effect-preview confetti-preview"></div>
+                    <div class="effect-info">
+                        <h3>彩带</h3>
+                        <p>五彩缤纷的彩带效果，适合庆祝场景</p>
+                        <div class="effect-actions">
+                            <button class="preview-btn" data-effect="confetti">预览</button>
+                            <button class="add-btn" data-effect="confetti">添加</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="effect-card">
+                    <div class="effect-preview stars-preview"></div>
+                    <div class="effect-info">
+                        <h3>星光</h3>
+                        <p>闪烁的星形粒子，营造梦幻夜空效果</p>
+                        <div class="effect-actions">
+                            <button class="preview-btn" data-effect="stars">预览</button>
+                            <button class="add-btn" data-effect="stars">添加</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="effect-card">
+                    <div class="effect-preview bubbles-preview"></div>
+                    <div class="effect-info">
+                        <h3>气泡</h3>
+                        <p>透明上升的气泡效果，模拟水中气泡</p>
+                        <div class="effect-actions">
+                            <button class="preview-btn" data-effect="bubbles">预览</button>
+                            <button class="add-btn" data-effect="bubbles">添加</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="effect-card">
+                    <div class="effect-preview flame-preview"></div>
+                    <div class="effect-info">
+                        <h3>火焰</h3>
+                        <p>模拟真实火焰的粒子效果，热烈动感</p>
+                        <div class="effect-actions">
+                            <button class="preview-btn" data-effect="flame">预览</button>
+                            <button class="add-btn" data-effect="flame">添加</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="effect-card">
+                    <div class="effect-preview snow-preview"></div>
+                    <div class="effect-info">
+                        <h3>雪花</h3>
+                        <p>飘落的雪花效果，营造冬季氛围</p>
+                        <div class="effect-actions">
+                            <button class="preview-btn" data-effect="snow">预览</button>
+                            <button class="add-btn" data-effect="snow">添加</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="effect-card">
+                    <div class="effect-preview glitter-preview"></div>
+                    <div class="effect-info">
+                        <h3>闪粉</h3>
+                        <p>闪耀的粒子效果，适合突出重点场景</p>
+                        <div class="effect-actions">
+                            <button class="preview-btn" data-effect="glitter">预览</button>
+                            <button class="add-btn" data-effect="glitter">添加</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="js/effects.js"></script>
+    <script src="js/firework-types.js"></script>
+    <script src="js/firework-basic.js"></script>
+    <script src="js/firework-peony.js"></script>
+    <script src="js/firework-willow.js"></script>
+    <script src="js/firework-ring.js"></script>
+    <script src="js/firework-leaf.js"></script>
+    <script src="js/firework-spider.js"></script>
+    <script src="js/firework-flame.js"></script>
+    <script src="js/firework-roman.js"></script>
+    <script src="js/firework-salute.js"></script>
+    <script src="js/firework-twinkle.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 添加调试按钮事件处理
+            const debugBtn = document.getElementById('debugBtn');
+            const debugOutput = document.getElementById('debugOutput');
+            
+            if (debugBtn && debugOutput) {
+                debugBtn.addEventListener('click', function() {
+                    // 获取控制器实例
+                    const controller = window.effectsController;
+                    
+                    if (!controller) {
+                        debugOutput.textContent = '错误: 未找到effectsController实例!';
+                        return;
+                    }
+                    
+                    // 收集调试信息
+                    const canvas = document.getElementById('effectCanvas');
+                    const debug = {
+                        canvas: {
+                            element: canvas ? '找到' : '未找到',
+                            width: canvas ? canvas.width : 0,
+                            height: canvas ? canvas.height : 0
+                        },
+                        container: {
+                            element: document.querySelector('.canvas-container') ? '找到' : '未找到', 
+                            width: document.querySelector('.canvas-container')?.clientWidth,
+                            height: document.querySelector('.canvas-container')?.clientHeight
+                        },
+                        controller: {
+                            particleSystems: controller.particleSystems.length,
+                            effectType: controller.effectType,
+                            effectSize: controller.effectSize,
+                            effectParticles: controller.effectParticles,
+                            effectSpeed: controller.effectSpeed,
+                            effectDuration: controller.effectDuration,
+                            effectColor: controller.effectColor
+                        },
+                        effects: {
+                            playButton: document.getElementById('playEffect') ? '找到' : '未找到',
+                            testButton: document.getElementById('testAllEffects') ? '找到' : '未找到',
+                            effectTypeSelect: document.getElementById('effectType') ? '找到' : '未找到',
+                        }
+                    };
+                    
+                    // 显示调试信息
+                    debugOutput.textContent = JSON.stringify(debug, null, 2);
+                    
+                    // 尝试运行喷泉效果
+                    controller.effectType = 'fountain';
+                    if (document.getElementById('effectType')) {
+                        document.getElementById('effectType').value = 'fountain';
+                    }
+                    controller.playEffect();
+                    
+                    // 添加调试信息
+                    setTimeout(() => {
+                        debugOutput.textContent += '\n\n播放喷泉效果后的状态:\n' +
+                            JSON.stringify({
+                                particleSystems: controller.particleSystems.length,
+                                activeEffects: controller.particleSystems.map(ps => ps.constructor.name)
+                            }, null, 2);
+                    }, 500);
+                });
+            }
+            
+            // 设置展开烟花子类型的事件处理
+            document.getElementById('expandFireworks').addEventListener('click', function() {
+                const subtypeCards = document.querySelectorAll('.firework-subtype');
+                let countVisible = 0;
+                
+                // 检查当前子类型卡片的显示状态
+                subtypeCards.forEach(card => {
+                    if (window.getComputedStyle(card).display !== 'none') {
+                        countVisible++;
+                    }
+                });
+                
+                // 切换显示状态
+                const isExpanded = countVisible > 0;
+                subtypeCards.forEach(card => {
+                    card.style.display = isExpanded ? 'none' : 'block';
+                });
+                
+                // 更新按钮文本
+                this.textContent = isExpanded ? '展开子类型' : '收起子类型';
+                
+                // 如果展开，滚动到左侧
+                if (!isExpanded) {
+                    document.querySelector('.effects-library').scrollLeft = 0;
+                }
+                
+                // 添加调试输出
+                console.log(`烟花子类型状态: ${isExpanded ? '收起' : '展开'}, 找到 ${subtypeCards.length} 个子类型卡片`);
+                let subtypeClasses = [];
+                subtypeCards.forEach(card => {
+                    const previewDiv = card.querySelector('.effect-preview');
+                    if (previewDiv) {
+                        const classList = Array.from(previewDiv.classList);
+                        const subtypeClass = classList.find(cls => cls.startsWith('firework-'));
+                        if (subtypeClass) {
+                            subtypeClasses.push(subtypeClass);
+                        }
+                    }
+                });
+                console.log('子类型列表:', subtypeClasses);
+                
+                // 更新调试输出面板
+                if (debugOutput) {
+                    debugOutput.innerHTML = `找到 ${subtypeCards.length} 个烟花子类型:<br>` + 
+                        subtypeClasses.join('<br>');
+                }
+            });
+            
+            // 设置左右导航按钮
+            document.getElementById('prevPage').addEventListener('click', function() {
+                const library = document.querySelector('.effects-library');
+                library.scrollLeft -= 400;
+            });
+            
+            document.getElementById('nextPage').addEventListener('click', function() {
+                const library = document.querySelector('.effects-library');
+                library.scrollLeft += 400;
+            });
+            
+            // 添加键盘导航支持
+            document.addEventListener('keydown', function(e) {
+                const library = document.querySelector('.effects-library');
+                if (e.key === 'ArrowLeft') {
+                    library.scrollLeft -= 200;
+                } else if (e.key === 'ArrowRight') {
+                    library.scrollLeft += 200;
+                }
+            });
+            
+            // 设置所有预览卡片的高度为150px
+            document.querySelectorAll('.effect-preview').forEach(preview => {
+                preview.style.height = '150px';
+            });
+            
+            // 初始化调试输出
+            const subtypeCards = document.querySelectorAll('.firework-subtype');
+            let subtypeClasses = [];
+            subtypeCards.forEach(card => {
+                const previewDiv = card.querySelector('.effect-preview');
+                if (previewDiv) {
+                    const classList = Array.from(previewDiv.classList);
+                    const subtypeClass = classList.find(cls => cls.startsWith('firework-'));
+                    if (subtypeClass) {
+                        subtypeClasses.push(subtypeClass);
+                    }
+                }
+            });
+            
+            // 更新调试输出面板
+            if (debugOutput) {
+                debugOutput.innerHTML = `找到 ${subtypeCards.length} 个烟花子类型:<br>` + 
+                    subtypeClasses.join('<br>');
+            }
+        });
+    </script>
+</body>
+</html> 

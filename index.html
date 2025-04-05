@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>烟花时间线编辑器</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* 确保黑色主题正确应用 */
+        html, body {
+            background-color: #000 !important;
+            color: var(--text-primary);
+        }
+        /* 确保所有输入元素使用深色背景 */
+        input, select, textarea, button {
+            background-color: var(--surface-dark) !important;
+            color: var(--text-primary) !important;
+            border-color: var(--border-color) !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <header class="app-header">
+            <div class="logo">烟花时间线编辑器</div>
+            <div class="toolbar">
+                <button id="new-btn" class="tool-btn">新建</button>
+                <button id="save-btn" class="tool-btn">保存</button>
+                <button id="export-btn" class="tool-btn">导出</button>
+                <div class="separator"></div>
+                <button id="add-item-btn" class="tool-btn">添加特效</button>
+                <button id="add-track-btn" class="tool-btn">添加轨道</button>
+                <div class="separator"></div>
+                <button id="play-btn" class="tool-btn">播放</button>
+                <button id="stop-btn" class="tool-btn">停止</button>
+            </div>
+        </header>
+        
+        <div class="content-container">
+            <aside class="sidebar">
+                <div class="properties-panel">
+                    <h3>属性</h3>
+                    <div class="properties-content" id="properties-panel">
+                        <div class="property-group">
+                            <label>名称</label>
+                            <input type="text" id="item-name" placeholder="未选择项目">
+                        </div>
+                        <div class="property-group">
+                            <label>开始时间</label>
+                            <input type="number" id="item-start" step="0.1" placeholder="0.0">
+                        </div>
+                        <div class="property-group">
+                            <label>持续时间 (秒)</label>
+                            <input type="number" id="item-duration" step="0.1" placeholder="1.0">
+                        </div>
+                        <div class="property-group">
+                            <label>特效类型</label>
+                            <select id="item-type">
+                                <optgroup label="烟花类型">
+                                    <option value="firework">普通烟花</option>
+                                    <option value="firework-peony">牡丹花型烟花</option>
+                                    <option value="firework-willow">柳树型烟花</option>
+                                    <option value="firework-flame-blossom">火焰花烟花</option>
+                                    <option value="firework-leaf">叶状烟花</option>
+                                    <option value="firework-ring">环形烟花</option>
+                                    <option value="firework-roman-candle">罗马蜡烛</option>
+                                    <option value="firework-salute">礼炮烟花</option>
+                                    <option value="firework-spider">蜘蛛型烟花</option>
+                                    <option value="firework-twinkle">闪烁烟花</option>
+                                </optgroup>
+                                <optgroup label="其他效果">
+                                    <option value="sparkle">闪光</option>
+                                    <option value="fountain">喷泉</option>
+                                    <option value="meteor">流星</option>
+                                    <option value="spiral">螺旋</option>
+                                    <option value="heart">爱心</option>
+                                    <option value="confetti">彩带</option>
+                                    <option value="stars">星光</option>
+                                    <option value="bubbles">气泡</option>
+                                    <option value="flame">火焰</option>
+                                    <option value="snow">雪花</option>
+                                    <option value="glitter">闪粉</option>
+                                </optgroup>
+                            </select>
+                        </div>
+                        <div class="property-group">
+                            <label>颜色</label>
+                            <input type="color" id="item-color" value="#ff5500">
+                        </div>
+                        <div class="property-group">
+                            <label>大小</label>
+                            <input type="range" id="item-size" min="1" max="10" value="5">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="library-panel">
+                    <h3>特效库</h3>
+                    <div class="library-content">
+                        <div class="effect-item" draggable="true" data-type="firework">
+                            <div class="effect-preview firework"></div>
+                            <span>普通烟花</span>
+                        </div>
+                        <div class="effect-item" draggable="true" data-type="firework-peony">
+                            <div class="effect-preview firework-peony"></div>
+                            <span>牡丹花型烟花</span>
+                        </div>
+                        <div class="effect-item" draggable="true" data-type="firework-willow">
+                            <div class="effect-preview firework-willow"></div>
+                            <span>柳树型烟花</span>
+                        </div>
+                        <div class="effect-item" draggable="true" data-type="firework-flame-blossom">
+                            <div class="effect-preview firework-flame-blossom"></div>
+                            <span>火焰花烟花</span>
+                        </div>
+                        <div class="effect-item" draggable="true" data-type="firework-leaf">
+                            <div class="effect-preview firework-leaf"></div>
+                            <span>叶状烟花</span>
+                        </div>
+                        <div class="effect-item" draggable="true" data-type="firework-ring">
+                            <div class="effect-preview firework-ring"></div>
+                            <span>环形烟花</span>
+                        </div>
+                        <div class="effect-item" draggable="true" data-type="firework-roman-candle">
+                            <div class="effect-preview firework-roman-candle"></div>
+                            <span>罗马蜡烛</span>
+                        </div>
+                        <div class="effect-item" draggable="true" data-type="firework-salute">
+                            <div class="effect-preview firework-salute"></div>
+                            <span>礼炮烟花</span>
+                        </div>
+                        <div class="effect-item" draggable="true" data-type="firework-spider">
+                            <div class="effect-preview firework-spider"></div>
+                            <span>蜘蛛型烟花</span>
+                        </div>
+                        <div class="effect-item" draggable="true" data-type="firework-twinkle">
+                            <div class="effect-preview firework-twinkle"></div>
+                            <span>闪烁烟花</span>
+                        </div>
+                        <div class="effect-item" draggable="true" data-type="sparkle">
+                            <div class="effect-preview sparkle"></div>
+                            <span>闪光</span>
+                        </div>
+                        <div class="effect-item" draggable="true" data-type="fountain">
+                            <div class="effect-preview fountain"></div>
+                            <span>喷泉</span>
+                        </div>
+                        <div class="effect-item" draggable="true" data-type="meteor">
+                            <div class="effect-preview meteor"></div>
+                            <span>流星</span>
+                        </div>
+                        <div class="effect-item" draggable="true" data-type="spiral">
+                            <div class="effect-preview spiral"></div>
+                            <span>螺旋</span>
+                        </div>
+                        <div class="effect-item" draggable="true" data-type="heart">
+                            <div class="effect-preview heart"></div>
+                            <span>爱心</span>
+                        </div>
+                        <div class="effect-item" draggable="true" data-type="confetti">
+                            <div class="effect-preview confetti"></div>
+                            <span>彩带</span>
+                        </div>
+                        <div class="effect-item" draggable="true" data-type="stars">
+                            <div class="effect-preview stars"></div>
+                            <span>星光</span>
+                        </div>
+                        <div class="effect-item" draggable="true" data-type="bubbles">
+                            <div class="effect-preview bubbles"></div>
+                            <span>气泡</span>
+                        </div>
+                        <div class="effect-item" draggable="true" data-type="flame">
+                            <div class="effect-preview flame"></div>
+                            <span>火焰</span>
+                        </div>
+                        <div class="effect-item" draggable="true" data-type="snow">
+                            <div class="effect-preview snow"></div>
+                            <span>雪花</span>
+                        </div>
+                        <div class="effect-item" draggable="true" data-type="glitter">
+                            <div class="effect-preview glitter"></div>
+                            <span>闪粉</span>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+            
+            <main class="main-content">
+                <div class="preview-container">
+                    <div id="preview-canvas">
+                        <div class="preview-placeholder">点击播放查看效果预览</div>
+                    </div>
+                    <div class="playback-controls">
+                        <button id="prev-frame" class="control-btn">⏮</button>
+                        <button id="play-preview" class="control-btn">▶</button>
+                        <button id="next-frame" class="control-btn">⏭</button>
+                        <div class="time-display" id="preview-time">00:00.00</div>
+                    </div>
+                </div>
+                
+                <div class="timeline-container">
+                    <div class="timeline-header">
+                        <div class="track-controls">
+                            <button id="add-track" class="track-btn" title="添加新轨道">+</button>
+                        </div>
+                        <div class="timeline-ruler">
+                            <!-- 时间刻度将由JS动态生成 -->
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-view">
+                        <div class="timeline-playhead"></div>
+                        <div class="tracks-container">
+                            <!-- 轨道将由JS动态生成 -->
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-footer">
+                        <div class="timeline-tools">
+                            <div class="zoom-controls">
+                                <button id="zoom-out" class="zoom-btn" title="缩小">-</button>
+                                <span id="zoom-level">100%</span>
+                                <button id="zoom-in" class="zoom-btn" title="放大">+</button>
+                            </div>
+                            <div class="timeline-position">00:00.00</div>
+                            <div class="snap-toggle">
+                                <label>
+                                    <input type="checkbox" id="snap-toggle" checked>
+                                    吸附
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+    
+    <script src="js/particleSystems.js"></script>
+    <script src="js/firework-peony.js"></script>
+    <script src="js/firework-willow.js"></script>
+    <script src="js/firework-flame.js"></script>
+    <script src="js/firework-leaf.js"></script>
+    <script src="js/firework-ring.js"></script>
+    <script src="js/firework-roman.js"></script>
+    <script src="js/firework-salute.js"></script>
+    <script src="js/firework-spider.js"></script>
+    <script src="js/firework-twinkle.js"></script>
+    <script src="js/firework-types.js"></script>
+    <script src="js/effects.js"></script>
+    <script src="js/timeline.js"></script>
+</body>
+</html> 

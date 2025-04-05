@@ -1,0 +1,1095 @@
+/* 全局样式 */
+:root {
+    --primary-color: #4a6af9;
+    --primary-dark: #3a5adf;
+    --accent-color: #f76a4f;
+    --bg-dark: #0a0a12;
+    --bg-medium: #10101e;
+    --bg-lighter: #1a1a2e;
+    --surface-dark: #141428;
+    --surface-medium: #1c1c35;
+    --border-color: #2a2a42;
+    --text-primary: #e0e4f5;
+    --text-secondary: #a0a8c0;
+    --track-height: 40px;
+    --header-height: 50px;
+    --sidebar-width: 240px;
+    --timeline-ruler-height: 36px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: var(--bg-dark);
+    color: var(--text-primary);
+    font-family: "SF Pro Display", -apple-system, "Segoe UI", sans-serif;
+    font-size: 13px;
+    line-height: 1.5;
+    overflow: hidden;
+    height: 100vh;
+}
+
+/* 应用容器 */
+.app-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+/* 顶部导航 */
+.app-header {
+    height: var(--header-height);
+    background: linear-gradient(180deg, var(--surface-dark), var(--bg-medium));
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+}
+
+.logo {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.toolbar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.tool-btn {
+    padding: 6px 10px;
+    background: var(--surface-dark);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    color: var(--text-primary);
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.tool-btn:hover {
+    background: var(--surface-medium);
+    border-color: var(--primary-color);
+}
+
+.separator {
+    width: 1px;
+    height: 24px;
+    background: var(--border-color);
+    margin: 0 4px;
+}
+
+/* 主内容布局 */
+.content-container {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+/* 侧边栏 */
+.sidebar {
+    width: var(--sidebar-width);
+    background: var(--surface-dark);
+    border-right: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.properties-panel, .library-panel {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.properties-panel {
+    flex: 0 0 auto;
+    height: 260px;
+}
+
+.library-panel {
+    flex: 1;
+}
+
+.properties-panel h3, .library-panel h3 {
+    padding: 10px 12px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+    background: var(--surface-medium);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.properties-content, .library-content {
+    padding: 12px;
+    overflow-y: auto;
+}
+
+.property-group {
+    margin-bottom: 10px;
+}
+
+.property-group label {
+    display: block;
+    font-size: 12px;
+    margin-bottom: 4px;
+    color: var(--text-secondary);
+}
+
+.property-group input, .property-group select {
+    width: 100%;
+    padding: 6px 8px;
+    background: var(--bg-medium);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    color: var(--text-primary);
+    font-size: 12px;
+}
+
+.property-group input[type="range"] {
+    padding: 0;
+}
+
+.property-group input[type="color"] {
+    height: 28px;
+}
+
+/* 效果库样式 */
+.effect-item {
+    display: flex;
+    align-items: center;
+    padding: 8px;
+    margin-bottom: 8px;
+    background: var(--surface-medium);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    cursor: grab;
+    transition: all 0.2s ease;
+}
+
+.effect-item:hover {
+    border-color: var(--primary-color);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.effect-item:active {
+    cursor: grabbing;
+    transform: translateY(0) scale(0.98);
+}
+
+.effect-preview {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    margin-right: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-medium);
+    position: relative;
+    overflow: hidden;
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.3);
+}
+
+.effect-item span {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* 特效图标样式 */
+.effect-preview.firework {
+    background: radial-gradient(circle at center, rgba(255, 100, 100, 0) 0%, rgba(255, 100, 100, 0) 30%, rgba(255, 100, 100, 0.3) 40%, rgba(255, 100, 100, 0) 60%);
+}
+.effect-preview.firework::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-image: radial-gradient(circle at center, #ff6464 0%, transparent 20%),
+                      radial-gradient(circle at 30% 30%, #f7d64f 0%, transparent 15%),
+                      radial-gradient(circle at 70% 30%, #64caff 0%, transparent 15%),
+                      radial-gradient(circle at 30% 70%, #64ff8d 0%, transparent 15%),
+                      radial-gradient(circle at 70% 70%, #f764ff 0%, transparent 15%);
+    animation: pulse 2s infinite;
+}
+
+/* 花团烟花 */
+.effect-preview.firework-peony {
+    background: radial-gradient(circle at center, rgba(255, 150, 150, 0) 0%, rgba(255, 150, 150, 0) 20%, rgba(255, 150, 150, 0.3) 40%, rgba(255, 150, 150, 0) 60%);
+}
+.effect-preview.firework-peony::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-image: radial-gradient(circle at center, #ff9696 0%, transparent 25%),
+                      radial-gradient(circle at 25% 25%, #ff9696 0%, transparent 10%),
+                      radial-gradient(circle at 75% 25%, #ff9696 0%, transparent 10%),
+                      radial-gradient(circle at 25% 75%, #ff9696 0%, transparent 10%),
+                      radial-gradient(circle at 75% 75%, #ff9696 0%, transparent 10%),
+                      radial-gradient(circle at 50% 25%, #ff9696 0%, transparent 10%),
+                      radial-gradient(circle at 50% 75%, #ff9696 0%, transparent 10%),
+                      radial-gradient(circle at 25% 50%, #ff9696 0%, transparent 10%),
+                      radial-gradient(circle at 75% 50%, #ff9696 0%, transparent 10%);
+    animation: pulse 3s infinite;
+}
+
+/* 柳树型烟花 */
+.effect-preview.firework-willow {
+    background: radial-gradient(circle at center, rgba(150, 255, 150, 0) 0%, rgba(150, 255, 150, 0) 30%, rgba(150, 255, 150, 0.2) 40%, rgba(150, 255, 150, 0) 60%);
+}
+.effect-preview.firework-willow::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        linear-gradient(180deg, rgba(150, 255, 150, 0.8) 0%, transparent 80%),
+        linear-gradient(170deg, rgba(150, 255, 150, 0.7) 0%, transparent 80%),
+        linear-gradient(190deg, rgba(150, 255, 150, 0.7) 0%, transparent 80%),
+        linear-gradient(160deg, rgba(150, 255, 150, 0.6) 0%, transparent 80%),
+        linear-gradient(200deg, rgba(150, 255, 150, 0.6) 0%, transparent 80%),
+        linear-gradient(150deg, rgba(150, 255, 150, 0.5) 0%, transparent 80%),
+        linear-gradient(210deg, rgba(150, 255, 150, 0.5) 0%, transparent 80%);
+    background-size: 1px 20px;
+    background-position: center top;
+    background-repeat: no-repeat;
+    transform-origin: center top;
+    animation: willow-fall 2s infinite;
+}
+
+/* 火焰花烟花 */
+.effect-preview.firework-flame-blossom {
+    background: radial-gradient(circle at center, rgba(255, 150, 50, 0) 0%, rgba(255, 150, 50, 0) 30%, rgba(255, 150, 50, 0.2) 40%, rgba(255, 150, 50, 0) 60%);
+}
+.effect-preview.firework-flame-blossom::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        radial-gradient(circle at center, #ff9632 0%, transparent 30%),
+        radial-gradient(circle at 30% 30%, #ff5a32 0%, transparent 20%),
+        radial-gradient(circle at 70% 30%, #ff5a32 0%, transparent 20%),
+        radial-gradient(circle at 30% 70%, #ff5a32 0%, transparent 20%),
+        radial-gradient(circle at 70% 70%, #ff5a32 0%, transparent 20%);
+    animation: flame-pulse 1.5s infinite alternate;
+}
+
+/* 叶状烟花 */
+.effect-preview.firework-leaf {
+    background: radial-gradient(circle at center, rgba(100, 200, 100, 0) 0%, rgba(100, 200, 100, 0) 30%, rgba(100, 200, 100, 0.2) 40%, rgba(100, 200, 100, 0) 60%);
+}
+.effect-preview.firework-leaf::before {
+    content: '✿';
+    position: absolute;
+    font-size: 16px;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #64c864;
+    text-shadow: 0 0 5px rgba(100, 200, 100, 0.8);
+    animation: leaf-spin 3s infinite linear;
+}
+
+/* 环形烟花 */
+.effect-preview.firework-ring {
+    background: radial-gradient(circle at center, rgba(100, 150, 255, 0) 0%, rgba(100, 150, 255, 0) 30%, rgba(100, 150, 255, 0.2) 40%, rgba(100, 150, 255, 0) 60%);
+}
+.effect-preview.firework-ring::before {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    top: 8px;
+    left: 8px;
+    border: 2px solid #6496ff;
+    border-radius: 50%;
+    box-shadow: 0 0 0 1px #96c8ff, 0 0 0 6px rgba(100, 150, 255, 0.2), 0 0 0 12px rgba(100, 150, 255, 0.1);
+    animation: ring-pulse 2s infinite;
+}
+
+/* 罗马蜡烛 */
+.effect-preview.firework-roman-candle {
+    background: linear-gradient(to top, rgba(255, 200, 50, 0.2), rgba(255, 200, 50, 0.05));
+}
+.effect-preview.firework-roman-candle::before {
+    content: '';
+    position: absolute;
+    bottom: 5px;
+    left: 17px;
+    width: 2px;
+    height: 12px;
+    background: #ffc832;
+    transform-origin: bottom center;
+    animation: roman-candle 0.8s infinite;
+}
+.effect-preview.firework-roman-candle::after {
+    content: '';
+    position: absolute;
+    top: 5px;
+    left: 15px;
+    width: 6px;
+    height: 6px;
+    background: #ffc832;
+    border-radius: 50%;
+    box-shadow: 0 0 4px #ffc832;
+    animation: roman-spark 0.8s infinite;
+}
+
+/* 礼炮烟花 */
+.effect-preview.firework-salute {
+    background: radial-gradient(circle at center, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0) 10%, rgba(255, 255, 255, 0.6) 20%, rgba(255, 255, 255, 0) 40%);
+}
+.effect-preview.firework-salute::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        radial-gradient(circle at center, white 0%, transparent 30%),
+        radial-gradient(circle at 30% 30%, #ff5e5e 0%, transparent 25%),
+        radial-gradient(circle at 70% 30%, #ffde59 0%, transparent 25%),
+        radial-gradient(circle at 30% 70%, #5e9aff 0%, transparent 25%),
+        radial-gradient(circle at 70% 70%, #5effb7 0%, transparent 25%);
+    animation: salute-flash 1s infinite;
+}
+
+/* 蜘蛛型烟花 */
+.effect-preview.firework-spider {
+    background: radial-gradient(circle at center, rgba(255, 100, 255, 0) 0%, rgba(255, 100, 255, 0) 30%, rgba(255, 100, 255, 0.2) 40%, rgba(255, 100, 255, 0) 60%);
+}
+.effect-preview.firework-spider::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        linear-gradient(0deg, rgba(255, 100, 255, 0.8) 0%, transparent 80%),
+        linear-gradient(45deg, rgba(255, 100, 255, 0.8) 0%, transparent 80%),
+        linear-gradient(90deg, rgba(255, 100, 255, 0.8) 0%, transparent 80%),
+        linear-gradient(135deg, rgba(255, 100, 255, 0.8) 0%, transparent 80%),
+        linear-gradient(180deg, rgba(255, 100, 255, 0.8) 0%, transparent 80%),
+        linear-gradient(225deg, rgba(255, 100, 255, 0.8) 0%, transparent 80%),
+        linear-gradient(270deg, rgba(255, 100, 255, 0.8) 0%, transparent 80%),
+        linear-gradient(315deg, rgba(255, 100, 255, 0.8) 0%, transparent 80%);
+    background-size: 1px 15px;
+    background-position: center;
+    background-repeat: no-repeat;
+    transform-origin: center;
+    animation: spider-pulse 2s infinite;
+}
+
+/* 闪烁烟花 */
+.effect-preview.firework-twinkle {
+    background: radial-gradient(circle at center, rgba(200, 200, 255, 0) 0%, rgba(200, 200, 255, 0) 30%, rgba(200, 200, 255, 0.2) 40%, rgba(200, 200, 255, 0) 60%);
+}
+.effect-preview.firework-twinkle::before {
+    content: '✦';
+    position: absolute;
+    font-size: 14px;
+    color: #c8c8ff;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-shadow: 0 0 5px rgba(200, 200, 255, 0.8);
+    animation: strong-twinkle 1s infinite alternate;
+}
+
+.effect-preview.sparkle {
+    background: linear-gradient(45deg, rgba(247, 214, 79, 0.1), rgba(247, 214, 79, 0.01));
+}
+.effect-preview.sparkle::before {
+    content: '✨';
+    font-size: 20px;
+    color: #f7d64f;
+    text-shadow: 0 0 5px rgba(247, 214, 79, 0.8);
+    animation: twinkle 1.5s infinite;
+}
+
+.effect-preview.fountain {
+    background: linear-gradient(to bottom, rgba(100, 149, 237, 0.05), rgba(100, 149, 237, 0.2));
+}
+.effect-preview.fountain::before {
+    content: '';
+    position: absolute;
+    bottom: 5px;
+    left: 18px;
+    width: 1px;
+    height: 20px;
+    background: #4a9df7;
+    transform-origin: bottom center;
+    animation: fountain 1s infinite;
+}
+.effect-preview.fountain::after {
+    content: '';
+    position: absolute;
+    bottom: 5px;
+    left: 12px;
+    width: 12px;
+    height: 3px;
+    background: #4a9df7;
+    border-radius: 50%;
+}
+
+.effect-preview.meteor {
+    background: linear-gradient(45deg, rgba(247, 106, 247, 0.05), rgba(247, 106, 247, 0.01));
+}
+.effect-preview.meteor::before {
+    content: '';
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 15px;
+    height: 2px;
+    background: linear-gradient(to right, #f76af7, transparent);
+    transform: rotate(45deg);
+    animation: shooting 2s infinite;
+}
+.effect-preview.meteor::after {
+    content: '';
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 4px;
+    height: 4px;
+    background: #f76af7;
+    border-radius: 50%;
+    box-shadow: 0 0 4px #f76af7;
+    animation: shooting 2s infinite;
+}
+
+.effect-preview.spiral {
+    background: linear-gradient(135deg, rgba(117, 247, 106, 0.05), rgba(117, 247, 106, 0.01));
+}
+.effect-preview.spiral::before {
+    content: '';
+    position: absolute;
+    top: 18px;
+    left: 18px;
+    width: 15px;
+    height: 15px;
+    border: 2px solid transparent;
+    border-top-color: #75f76a;
+    border-radius: 50%;
+    animation: spin 1.5s linear infinite;
+}
+
+.effect-preview.heart {
+    background: linear-gradient(135deg, rgba(255, 105, 105, 0.05), rgba(255, 105, 105, 0.01));
+}
+.effect-preview.heart::before {
+    content: '❤';
+    font-size: 18px;
+    color: #ff6969;
+    animation: beat 1s infinite alternate;
+}
+
+.effect-preview.confetti {
+    background: linear-gradient(135deg, rgba(255, 222, 89, 0.05), rgba(89, 222, 255, 0.05));
+}
+.effect-preview.confetti::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        radial-gradient(circle at 20% 30%, #ff5e5e 0%, #ff5e5e 2px, transparent 2px),
+        radial-gradient(circle at 40% 70%, #5effb7 0%, #5effb7 2px, transparent 2px),
+        radial-gradient(circle at 60% 40%, #5e9aff 0%, #5e9aff 2px, transparent 2px),
+        radial-gradient(circle at 80% 20%, #ffde59 0%, #ffde59 2px, transparent 2px),
+        radial-gradient(circle at 30% 50%, #ff5ee9 0%, #ff5ee9 2px, transparent 2px),
+        radial-gradient(circle at 70% 80%, #5effef 0%, #5effef 2px, transparent 2px);
+    animation: confetti-fall 2s linear infinite;
+}
+
+.effect-preview.stars {
+    background: linear-gradient(135deg, rgba(62, 71, 157, 0.1), rgba(22, 31, 107, 0.2));
+}
+.effect-preview.stars::before {
+    content: '★';
+    font-size: 12px;
+    color: #ffde59;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    text-shadow: 
+        10px 5px 0 #ffde59,
+        5px 15px 0 #ffde59,
+        15px 15px 0 #ffde59;
+    animation: twinkle 2s infinite alternate;
+}
+
+.effect-preview.bubbles {
+    background: linear-gradient(to bottom, rgba(100, 200, 255, 0.05), rgba(100, 200, 255, 0.1));
+}
+.effect-preview.bubbles::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        radial-gradient(circle at 30% 70%, rgba(100, 200, 255, 0.7) 0%, rgba(100, 200, 255, 0.7) 3px, transparent 4px),
+        radial-gradient(circle at 70% 50%, rgba(100, 200, 255, 0.5) 0%, rgba(100, 200, 255, 0.5) 4px, transparent 5px),
+        radial-gradient(circle at 50% 30%, rgba(100, 200, 255, 0.6) 0%, rgba(100, 200, 255, 0.6) 5px, transparent 6px);
+    animation: bubble-rise 3s linear infinite;
+}
+
+.effect-preview.flame {
+    background: linear-gradient(to top, rgba(255, 102, 0, 0.2), rgba(255, 51, 0, 0.05));
+}
+.effect-preview.flame::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 12px;
+    width: 12px;
+    height: 20px;
+    background: linear-gradient(to top, #ff6600, #ff3d00);
+    border-radius: 50% 50% 20% 20% / 60% 60% 40% 40%;
+    animation: flame 0.5s infinite alternate;
+}
+
+.effect-preview.snow {
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.1), rgba(210, 230, 255, 0.15));
+}
+.effect-preview.snow::before {
+    content: '❄';
+    font-size: 8px;
+    color: white;
+    position: absolute;
+    top: 8px;
+    left: 12px;
+    text-shadow: 
+        8px 5px 0 white,
+        16px 10px 0 white,
+        6px 15px 0 white,
+        12px 20px 0 white;
+    animation: snow-fall 3s linear infinite;
+}
+
+.effect-preview.glitter {
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.05), rgba(255, 215, 0, 0.1));
+}
+.effect-preview.glitter::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        radial-gradient(circle at 20% 20%, rgba(255, 215, 0, 0.9) 0%, rgba(255, 215, 0, 0.9) 1px, transparent 1px),
+        radial-gradient(circle at 40% 40%, rgba(255, 215, 0, 0.9) 0%, rgba(255, 215, 0, 0.9) 1px, transparent 1px),
+        radial-gradient(circle at 60% 60%, rgba(255, 215, 0, 0.9) 0%, rgba(255, 215, 0, 0.9) 1px, transparent 1px),
+        radial-gradient(circle at 80% 80%, rgba(255, 215, 0, 0.9) 0%, rgba(255, 215, 0, 0.9) 1px, transparent 1px),
+        radial-gradient(circle at 30% 70%, rgba(255, 215, 0, 0.9) 0%, rgba(255, 215, 0, 0.9) 1px, transparent 1px),
+        radial-gradient(circle at 70% 30%, rgba(255, 215, 0, 0.9) 0%, rgba(255, 215, 0, 0.9) 1px, transparent 1px);
+    animation: glitter 1s infinite;
+}
+
+/* 动画效果 */
+@keyframes pulse {
+    0% { transform: scale(0.9); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(0.9); }
+}
+
+@keyframes twinkle {
+    0% { opacity: 0.2; }
+    100% { opacity: 1; }
+}
+
+@keyframes fountain {
+    0% { transform: translateY(0) rotate(-5deg); }
+    50% { transform: translateY(-15px) rotate(5deg); }
+    100% { transform: translateY(0) rotate(-5deg); }
+}
+
+@keyframes shooting {
+    0% { transform: translate(0, 0) rotate(45deg); }
+    100% { transform: translate(-30px, 30px) rotate(45deg); }
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes beat {
+    0% { transform: scale(0.8); }
+    100% { transform: scale(1.2); }
+}
+
+@keyframes confetti-fall {
+    0% { transform: translateY(-5px); }
+    100% { transform: translateY(10px); }
+}
+
+@keyframes bubble-rise {
+    0% { transform: translateY(10px); }
+    100% { transform: translateY(-15px); }
+}
+
+@keyframes flame {
+    0% { transform: scaleY(0.8) scaleX(1.1); filter: brightness(1.0); }
+    100% { transform: scaleY(1.1) scaleX(0.9); filter: brightness(1.2); }
+}
+
+@keyframes snow-fall {
+    0% { transform: translateY(-5px); }
+    100% { transform: translateY(15px); }
+}
+
+@keyframes glitter {
+    0%, 100% { opacity: 0.2; }
+    50% { opacity: 1; }
+}
+
+/* 新增烟花类型的动画 */
+@keyframes willow-fall {
+    0% { transform: scale(0.9) translateY(-2px); }
+    50% { transform: scale(1.0) translateY(2px); }
+    100% { transform: scale(0.9) translateY(-2px); }
+}
+
+@keyframes flame-pulse {
+    0% { transform: scale(0.9); filter: brightness(0.9); }
+    100% { transform: scale(1.05); filter: brightness(1.2); }
+}
+
+@keyframes leaf-spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes ring-pulse {
+    0% { transform: scale(0.8); opacity: 0.8; }
+    50% { transform: scale(1.1); opacity: 0.5; }
+    100% { transform: scale(0.8); opacity: 0.8; }
+}
+
+@keyframes roman-candle {
+    0% { height: 12px; }
+    50% { height: 20px; }
+    100% { height: 12px; }
+}
+
+@keyframes roman-spark {
+    0% { transform: translateY(0); opacity: 0.3; }
+    20% { transform: translateY(-15px); opacity: 1; }
+    100% { transform: translateY(-25px); opacity: 0; }
+}
+
+@keyframes salute-flash {
+    0% { transform: scale(0.8); opacity: 0.5; }
+    10% { transform: scale(1.2); opacity: 1; }
+    20% { transform: scale(0.9); opacity: 0.7; }
+    30% { transform: scale(1.1); opacity: 0.9; }
+    100% { transform: scale(1.0); opacity: 0.6; }
+}
+
+@keyframes spider-pulse {
+    0% { transform: scale(0.9); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(0.9); }
+}
+
+@keyframes strong-twinkle {
+    0% { opacity: 0.1; transform: scale(0.8); }
+    50% { opacity: 0.5; transform: scale(1.0); }
+    100% { opacity: 1.0; transform: scale(1.2); }
+}
+
+/* 轨道按钮样式增强 */
+.track-btn {
+    width: 24px;
+    height: 24px;
+    background: var(--primary-color);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 6px;
+    color: white;
+    font-size: 16px;
+    line-height: 1;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.track-btn:hover {
+    background: var(--primary-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+}
+
+/* 主内容区 */
+.main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* 预览容器 */
+.preview-container {
+    height: 400px;
+    background: var(--bg-dark);
+    margin: 15px;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+#preview-canvas {
+    flex: 1;
+    background: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    color: var(--text-secondary);
+}
+
+.playback-controls {
+    height: 40px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0 20px;
+    background: var(--surface-dark);
+    border-top: 1px solid var(--border-color);
+}
+
+.control-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--surface-medium);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.control-btn:hover {
+    background: var(--primary-color);
+    border-color: var(--primary-dark);
+}
+
+.time-display {
+    padding: 4px 10px;
+    background: var(--bg-medium);
+    border-radius: 4px;
+    color: var(--text-primary);
+    font-size: 12px;
+    font-family: monospace;
+}
+
+/* 时间轴容器 */
+.timeline-container {
+    flex: 1;
+    margin: 0 15px 15px;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    background: var(--surface-dark);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.timeline-header {
+    display: flex;
+    height: var(--timeline-ruler-height);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.track-controls {
+    width: 40px;
+    min-width: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--surface-medium);
+    border-right: 1px solid var(--border-color);
+}
+
+.track-btn {
+    width: 20px;
+    height: 20px;
+    background: var(--surface-dark);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    color: var(--text-primary);
+    font-size: 14px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.timeline-ruler {
+    flex: 1;
+    height: 100%;
+    background: #222;
+    position: relative;
+    border-bottom: 1px solid #333;
+}
+
+.timeline-view {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+}
+
+.tracks-container {
+    flex: 1;
+    padding: 10px 0;
+    overflow-y: auto;
+}
+
+.track {
+    display: flex;
+    height: var(--track-height);
+    margin: 6px 0;
+}
+
+.track-label {
+    width: 40px;
+    min-width: 40px;
+    background: #333;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #eee;
+    font-size: 11px;
+    font-weight: 500;
+    border-right: 1px solid #444;
+    user-select: none;
+}
+
+.track-content {
+    flex: 1;
+    height: 100%;
+    position: relative;
+    background: #222;
+    border-radius: 0 4px 4px 0;
+}
+
+.timeline-item {
+    position: absolute;
+    height: 30px;
+    top: 5px;
+    background: linear-gradient(to bottom, #28a745, #1e7e34);
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    padding: 0 8px;
+    color: white;
+    font-size: 11px;
+    font-weight: 500;
+    cursor: move;
+    z-index: 5;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    user-select: none;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.timeline-item:hover {
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+    z-index: 10;
+}
+
+.timeline-item.selected {
+    background: linear-gradient(to bottom, var(--accent-color), #e55a3f);
+    box-shadow: 0 2px 8px rgba(247, 106, 79, 0.4);
+    z-index: 15;
+}
+
+/* 时间轴指示器 */
+.timeline-playhead {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    height: 100%;
+    background: #fff;
+    z-index: 20;
+    cursor: ew-resize;
+}
+
+/* 播放头指示器替换原来的三角形 */
+.playhead-indicator {
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 10px;
+    height: 20px;
+    background: #fff;
+    border-radius: 3px 3px 0 0;
+    z-index: 25;
+}
+
+/* 播放头拖拽状态 */
+.timeline-playhead.dragging {
+    background: #ddd;
+    width: 3px;
+}
+
+.timeline-playhead.dragging .playhead-indicator {
+    background: #ddd;
+}
+
+.timeline-footer {
+    height: 36px;
+    background: var(--surface-medium);
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    padding: 0 15px;
+}
+
+.timeline-tools {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.zoom-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.zoom-btn {
+    width: 24px;
+    height: 24px;
+    background: var(--surface-dark);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    color: var(--text-primary);
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.zoom-btn:hover {
+    background: var(--primary-color);
+    color: white;
+}
+
+.timeline-position {
+    font-family: monospace;
+    font-size: 12px;
+    color: var(--text-primary);
+}
+
+.snap-toggle {
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+.snap-toggle input {
+    margin-right: 4px;
+}
+
+/* 时间尺刻度线样式调整 */
+.ruler-tick {
+    position: absolute;
+    width: 1px;
+    bottom: 0;
+    height: 5px;
+    background-color: rgba(150, 150, 150, 0.7);
+}
+
+.ruler-tick.major {
+    height: 12px;
+    background-color: rgba(180, 180, 180, 0.9);
+}
+
+.ruler-label {
+    position: absolute;
+    bottom: 14px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 10px;
+    color: #aaa;
+    white-space: nowrap;
+    font-family: monospace;
+}
+
+/* 烟花子类型预览样式 */
+.firework-peony-preview {
+    background: radial-gradient(circle, rgba(255,20,147,0.2) 0%, rgba(0,0,0,0) 70%);
+    animation: firework-pulse 2s infinite;
+}
+
+.firework-willow-preview {
+    background: radial-gradient(circle, rgba(173,255,47,0.2) 0%, rgba(0,0,0,0) 70%);
+    animation: willow-fall 3s infinite;
+}
+
+.firework-ring-preview {
+    background: radial-gradient(circle, rgba(30,144,255,0.2) 0%, rgba(0,0,0,0) 70%);
+    animation: ring-pulse 2s infinite;
+}
+
+.firework-leaf-preview {
+    background: radial-gradient(circle, rgba(50,205,50,0.2) 0%, rgba(0,0,0,0) 70%);
+    animation: leaf-spin 3s infinite;
+}
+
+.firework-spider-preview {
+    background: radial-gradient(circle, rgba(255,165,0,0.2) 0%, rgba(0,0,0,0) 70%);
+    animation: spider-pulse 2s infinite;
+}
+
+/* 烟花子类型动画 */
+@keyframes willow-fall {
+    0% { background-position: center 20%; }
+    50% { background-position: center 80%; }
+    100% { background-position: center 20%; }
+}
+
+@keyframes ring-pulse {
+    0% { background-size: 30% 30%; }
+    50% { background-size: 70% 70%; }
+    100% { background-size: 30% 30%; }
+}
+
+@keyframes leaf-spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes spider-pulse {
+    0% { opacity: 0.3; }
+    50% { opacity: 0.8; }
+    100% { opacity: 0.3; }
+} 
